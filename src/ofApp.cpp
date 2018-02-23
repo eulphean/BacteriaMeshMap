@@ -6,9 +6,18 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
   ofBackground(0);
+  ofSetVerticalSync(true);
+  
+  // Setup GUI.
+  gui.setup();
+  gui.add(rowsColumns.setup("MeshDivisions", 10, 5, 100));
+  gui.add(attraction.setup("Attraction", 20, -100, 100));
+  gui.add(repulsion.setup("Repulsion", -20, -100, 100));
+  rowsColumns.addListener(this, &ofApp::meshDivisionUpdated);
   
   // Load an image.
   image.load("bacteria3.png");
+  image.resize(500, 500);
   ofTexture tex = image.getTexture();
   setupMeshPlane();
   
@@ -36,6 +45,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+  gui.draw();
   ofSetColor(ofColor::white);
   ofPushMatrix();
     int xTranslate = ofGetWidth()/2 - image.getWidth()/2;
@@ -45,6 +55,17 @@ void ofApp::draw(){
     mesh.draw();
     image.getTexture().unbind();
   ofPopMatrix();
+}
+
+void ofApp::meshDivisionUpdated(int &division) {
+  // GUI kicked this listener.
+  
+  // Clear all the meshes.
+  mesh.clear();
+  meshCopy.clear();
+  
+  // Setup the mesh again with new values from the GUI. 
+  setupMeshPlane();
 }
 
 //
@@ -60,8 +81,8 @@ void ofApp::keyPressed(int key) {
 void ofApp::setupMeshPlane() {
   mesh.setMode(OF_PRIMITIVE_TRIANGLES);
   
-  int nCols = 20;
-  int nRows = 20;
+  int nCols = rowsColumns;
+  int nRows = rowsColumns;
   int w = image.getWidth();
   int h = image.getHeight();
   
@@ -122,7 +143,7 @@ void ofApp::addInteractivity(glm::vec2 v, int idx) {
     int distanceToMouse = glm::length(distance);
   
     // Closer the vertex is, more distortion. Farther the vertex, less is the distortion.
-    int displacement = ofMap(distanceToMouse, 0, 400, 20, -20, true);
+    int displacement = ofMap(distanceToMouse, 0, 400, attraction, -repulsion, true);
   
     // Get the new vertex in the direction of the normal vector.
     glm::vec2 newVertex = v + displacement * normal;

@@ -17,6 +17,7 @@ class ofApp : public ofBaseApp{
     void setupMeshPlane();
     void addInteractivity(glm::vec2 v, int idx);
     void addJitter(glm::vec2 v, int idx);
+    void meshDivisionUpdated(int &divisions);
   
     // Events.
     void keyPressed(int key);
@@ -35,4 +36,10 @@ class ofApp : public ofBaseApp{
     
     // Jitter
     vector<glm::vec2> offsets;
+  
+    // GUI.
+    ofxIntSlider rowsColumns;
+    ofxIntSlider attraction;
+    ofxIntSlider repulsion;
+    ofxPanel gui; 
 };
