@@ -9,9 +9,11 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+    void setupMeshPlane();
   
     const int radius = 400; 
   
+    // Mesh
     ofMesh mesh;
     ofImage image;
   

@@ -7,29 +7,7 @@ void ofApp::setup(){
   // Load an image.
   image.load("bacteria3.png");
   ofTexture tex = image.getTexture();
-  
-  // Setup a circular mesh. We'll just have 4 points.
-  mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-  
-  float x = radius * cos(ofDegToRad(45));
-  float y = radius * sin(ofDegToRad(45));
-  mesh.addVertex({x, y, 0});
-  mesh.addTexCoord(glm::vec2(image.getWidth(), image.getHeight()));
-  
-  x = radius * cos(ofDegToRad(135));
-  y = radius * sin(ofDegToRad(135));
-  mesh.addVertex({x, y, 0});
-  mesh.addTexCoord(glm::vec2(0, image.getHeight()));
-  
-  x = radius * cos(ofDegToRad(225));
-  y = radius * sin(ofDegToRad(225));
-  mesh.addVertex({x, y, 0});
-  mesh.addTexCoord(glm::vec2(0, 0));
-  
-  x = radius * cos(ofDegToRad(315));
-  y = radius * sin(ofDegToRad(315));
-  mesh.addVertex({x, y, 0});
-  mesh.addTexCoord(glm::vec2(0, image.getHeight()));
+  setupMeshPlane();
 }
 
 //--------------------------------------------------------------
@@ -38,12 +16,12 @@ void ofApp::update(){
   offsets.clear();
   for (int i = 0; i < mesh.getVertices().size(); i++) {
     // Jitter offset
-    offsets.push_back(glm::vec2(ofRandom(0,10), ofRandom(0,10)));
+    offsets.push_back(glm::vec2(ofRandom(0,5), ofRandom(0,5)));
     
     auto v = mesh.getVertices()[i];
     
     float time = ofGetElapsedTimef();
-    float timeScale = 2.0;
+    float timeScale = 0.5;
     float displacementScale = 1; // This is dependent on time now. Map this to time.
     glm::vec2 offset = offsets[i];
 
@@ -60,13 +38,52 @@ void ofApp::draw(){
   ofSetColor(ofColor::white);
   //image.draw(10, 10);
   ofPushMatrix();
-    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+    int xTranslate = ofGetWidth()/2 - image.getWidth()/2;
+    int yTranslate = ofGetHeight()/2 - image.getHeight()/2;
+    ofTranslate(xTranslate, yTranslate);
     image.getTexture().bind();
-    mesh.drawFaces();
+    mesh.draw();
     image.getTexture().unbind();
-//    for (auto v : mesh.getVertices()) {
-//      ofSetColor(ofColor::red);
-//      ofDrawCircle(v.x, v.y, 10);
-//    }
   ofPopMatrix();
+}
+
+void ofApp::setupMeshPlane() {
+  int nCols = 5;
+  int nRows = 5;
+  int w = image.getWidth();
+  int h = image.getHeight();
+  
+  // Setup a 5 x 5 mesh.
+  for (int y = 0; y < nCols; y++) {
+    for (int x = 0; x < nRows; x++) {
+      float ix = w * x / (nCols - 1);
+      float iy = h * y / (nRows - 1);
+      mesh.addVertex({ix, iy, 0});
+      mesh.addTexCoord(glm::vec2(ix, iy));
+    }
+  }
+  
+  // We don't draw the last row / col (nRows - 1 and nCols - 1) because it was
+    // taken care of by the row above and column to the left.
+    for (int y = 0; y < nRows - 1; y++)
+    {
+        for (int x = 0; x < nCols - 1; x++)
+        {
+            // Draw T0
+            // P0
+            mesh.addIndex((y + 0) * nCols + (x + 0));
+            // P1
+            mesh.addIndex((y + 0) * nCols + (x + 1));
+            // P2
+            mesh.addIndex((y + 1) * nCols + (x + 0));
+
+            // Draw T1
+            // P1
+            mesh.addIndex((y + 0) * nCols + (x + 1));
+            // P3
+            mesh.addIndex((y + 1) * nCols + (x + 1));
+            // P2
+            mesh.addIndex((y + 1) * nCols + (x + 0));
+        }
+    }
 }
