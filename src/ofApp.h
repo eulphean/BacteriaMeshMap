@@ -1,3 +1,6 @@
+// Author: Amay Kataria
+// Date: 02/22/2018
+
 #pragma once
 
 #include "ofMain.h"
@@ -9,13 +12,27 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-    void setupMeshPlane();
   
-    const int radius = 400; 
+    // Helper methods.
+    void setupMeshPlane();
+    void addInteractivity(glm::vec2 v, int idx);
+    void addJitter(glm::vec2 v, int idx);
+  
+    // Events.
+    void keyPressed(int key);
+  
+    // Constants.
+    const int radius = 400;
   
     // Mesh
     ofMesh mesh;
+    ofMesh meshCopy; // Keep a copy of the original mesh so we can reset the mesh when
+    // we don't want to interact with the mesh. 
     ofImage image;
   
+    // Interaction.
+    bool enableInteractivity;
+    
+    // Jitter
     vector<glm::vec2> offsets;
 };

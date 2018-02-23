@@ -1,3 +1,6 @@
+// Author: Amay Kataria
+// Date: 02/22/2018
+
 #include "ofMain.h"
 #include "ofApp.h"
 
