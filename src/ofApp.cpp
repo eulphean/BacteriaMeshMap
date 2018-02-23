@@ -60,8 +60,8 @@ void ofApp::keyPressed(int key) {
 void ofApp::setupMeshPlane() {
   mesh.setMode(OF_PRIMITIVE_TRIANGLES);
   
-  int nCols = 15;
-  int nRows = 15;
+  int nCols = 20;
+  int nRows = 20;
   int w = image.getWidth();
   int h = image.getHeight();
   
@@ -122,7 +122,7 @@ void ofApp::addInteractivity(glm::vec2 v, int idx) {
     int distanceToMouse = glm::length(distance);
   
     // Closer the vertex is, more distortion. Farther the vertex, less is the distortion.
-    int displacement = ofMap(distanceToMouse, 0, 400, 20, 0, true);
+    int displacement = ofMap(distanceToMouse, 0, 400, 20, -20, true);
   
     // Get the new vertex in the direction of the normal vector.
     glm::vec2 newVertex = v + displacement * normal;
