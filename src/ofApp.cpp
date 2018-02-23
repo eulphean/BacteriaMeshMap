@@ -10,12 +10,12 @@ void ofApp::setup(){
   
   // Setup GUI.
   gui.setup();
-  gui.add(rowsColumns.setup("MeshDivisions", 10, 5, 100));
+  gui.add(meshDivisions.setup("Mesh Divisions", 10, 5, 100));
   gui.add(attraction.setup("Attraction", 20, -100, 100));
   gui.add(repulsion.setup("Repulsion", -20, -100, 100));
-  rowsColumns.addListener(this, &ofApp::meshDivisionUpdated);
+  meshDivisions.addListener(this, &ofApp::meshDivisionUpdated);
   
-  // Load an image.
+  // Load bacteria image and resize.
   image.load("bacteria3.png");
   image.resize(500, 500);
   ofTexture tex = image.getTexture();
@@ -46,6 +46,8 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
   gui.draw();
+  ofDrawBitmapStringHighlight("Press i to interact with the bacteria.", 10, 120);
+  
   ofSetColor(ofColor::white);
   ofPushMatrix();
     int xTranslate = ofGetWidth()/2 - image.getWidth()/2;
@@ -81,8 +83,8 @@ void ofApp::keyPressed(int key) {
 void ofApp::setupMeshPlane() {
   mesh.setMode(OF_PRIMITIVE_TRIANGLES);
   
-  int nCols = rowsColumns;
-  int nRows = rowsColumns;
+  int nCols = meshDivisions;
+  int nRows = nCols;
   int w = image.getWidth();
   int h = image.getHeight();
   
@@ -97,32 +99,32 @@ void ofApp::setupMeshPlane() {
   }
   
   // We don't draw the last row / col (nRows - 1 and nCols - 1) because it was
-    // taken care of by the row above and column to the left.
-    for (int y = 0; y < nRows - 1; y++)
-    {
-        for (int x = 0; x < nCols - 1; x++)
-        {
-            // Draw T0
-            // P0
-            mesh.addIndex((y + 0) * nCols + (x + 0));
-            // P1
-            mesh.addIndex((y + 0) * nCols + (x + 1));
-            // P2
-            mesh.addIndex((y + 1) * nCols + (x + 0));
+  // taken care of by the row above and column to the left.
+  for (int y = 0; y < nRows - 1; y++)
+  {
+      for (int x = 0; x < nCols - 1; x++)
+      {
+          // Draw T0
+          // P0
+          mesh.addIndex((y + 0) * nCols + (x + 0));
+          // P1
+          mesh.addIndex((y + 0) * nCols + (x + 1));
+          // P2
+          mesh.addIndex((y + 1) * nCols + (x + 0));
 
-            // Draw T1
-            // P1
-            mesh.addIndex((y + 0) * nCols + (x + 1));
-            // P3
-            mesh.addIndex((y + 1) * nCols + (x + 1));
-            // P2
-            mesh.addIndex((y + 1) * nCols + (x + 0));
-        }
-    }
-  
-    // Doing this does a deep copy of the mesh.
-    // Save a copy to restore the mesh when not interacting. 
-    meshCopy = mesh;
+          // Draw T1
+          // P1
+          mesh.addIndex((y + 0) * nCols + (x + 1));
+          // P3
+          mesh.addIndex((y + 1) * nCols + (x + 1));
+          // P2
+          mesh.addIndex((y + 1) * nCols + (x + 0));
+      }
+  }
+
+  // Doing this does a deep copy of the mesh.
+  // Save a copy to restore the mesh when not interacting.
+  meshCopy = mesh;
 }
 
 void ofApp::addInteractivity(glm::vec2 v, int idx) {

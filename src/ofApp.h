@@ -22,9 +22,6 @@ class ofApp : public ofBaseApp{
     // Events.
     void keyPressed(int key);
   
-    // Constants.
-    const int radius = 400;
-  
     // Mesh
     ofMesh mesh;
     ofMesh meshCopy; // Keep a copy of the original mesh so we can reset the mesh when
@@ -38,7 +35,7 @@ class ofApp : public ofBaseApp{
     vector<glm::vec2> offsets;
   
     // GUI.
-    ofxIntSlider rowsColumns;
+    ofxIntSlider meshDivisions;
     ofxIntSlider attraction;
     ofxIntSlider repulsion;
     ofxPanel gui; 
